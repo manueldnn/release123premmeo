@@ -1,0 +1,669 @@
+{
+  "ApiId": "e34ff7bbf97b3b90c9a9be",
+  "ContextPortal": 0,
+  "IsDebug": false,
+  "IsEnabled": true,
+  "Name": "Get App Builder Updates",
+  "Triggers": [
+    {
+      "IsEnabled": true,
+      "TriggerDefId": "RepeatInterval",
+      "Parameters": {
+        "Start": {
+          "Date": "",
+          "Time": "12:00:00AM"
+        },
+        "Interval": {
+          "Qty": "5",
+          "Unit": {
+            "Value": "Minutes",
+            "IsExpression": false,
+            "Expression": null
+          }
+        },
+        "SkipIfRunning": "",
+        "OnMissfire": {
+          "Value": "",
+          "IsExpression": false,
+          "Expression": ""
+        }
+      }
+    },
+    {
+      "IsEnabled": true,
+      "TriggerDefId": "AppStart",
+      "Parameters": {}
+    }
+  ],
+  "Actions": [
+    {
+      "ActionType": "LoadUser",
+      "Description": "Untitled Action",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 0,
+      "IsDisabled": false,
+      "Parameters": {
+        "Id": "1",
+        "Portal": ""
+      }
+    },
+    {
+      "ActionType": "PostData",
+      "Description": "Check if app is marked as Development",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 1,
+      "IsDisabled": false,
+      "Parameters": {
+        "URL": "https://console.plantanapp.com/api/AppDevCheck?URL=[URL:Domain]",
+        "UrlTokenContext": {
+          "Value": "Url",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "UseSSL": "",
+        "Timeout": "",
+        "HttpMethod": {
+          "Value": "GET",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "Data": "",
+        "DoNotEscapeTokens": "",
+        "DisableReferer": "",
+        "UseDNNProxySettings": "",
+        "AddCurrentCookies": "",
+        "CookieContainerToken": "",
+        "OutputTokenName": "CheckApp",
+        "IgnoreErrors": "",
+        "Headers": [],
+        "OutputHeaders": [],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "RunSql",
+      "Description": "Clear Updates table before getting new entries",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 2,
+      "IsDisabled": false,
+      "Parameters": {
+        "ConnectionString": "",
+        "QueryTimeout": "",
+        "SqlQuery": "DELETE FROM dbo.PlantAnApp_Updates",
+        "OutputTokenName": "",
+        "ShowErrors": false,
+        "BindTokens": [],
+        "ExtractColumns": [],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "RunSql",
+      "Description": "Clear Hotfixes table before getting new entries",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 3,
+      "IsDisabled": false,
+      "Parameters": {
+        "ConnectionString": "",
+        "QueryTimeout": "",
+        "SqlQuery": "DELETE FROM dbo.PlantAnApp_Updates_Hotfixes",
+        "OutputTokenName": "",
+        "ShowErrors": false,
+        "BindTokens": [],
+        "ExtractColumns": [],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "RunSql",
+      "Description": "Clear Specific Updates table before getting new entries",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 4,
+      "IsDisabled": false,
+      "Parameters": {
+        "ConnectionString": "",
+        "QueryTimeout": "",
+        "SqlQuery": "DELETE FROM dbo.PlantAnApp_Updates_SpecificUpdates",
+        "OutputTokenName": "",
+        "ShowErrors": false,
+        "BindTokens": [],
+        "ExtractColumns": [],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "RunSql",
+      "Description": "Clear Add-ons table before getting new entries",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 5,
+      "IsDisabled": false,
+      "Parameters": {
+        "ConnectionString": "",
+        "QueryTimeout": "",
+        "SqlQuery": "DELETE FROM dbo.PlantAnApp_Updates_Addons",
+        "OutputTokenName": "",
+        "ShowErrors": false,
+        "BindTokens": [],
+        "ExtractColumns": [],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "PostData",
+      "Description": "Get Updates",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 6,
+      "IsDisabled": false,
+      "Parameters": {
+        "URL": "https://services.plantanapp.com/api/GetAppUpdates",
+        "UrlTokenContext": {
+          "Value": "Url",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "UseSSL": "",
+        "Timeout": "",
+        "HttpMethod": {
+          "Value": "GET",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "Data": "",
+        "DoNotEscapeTokens": "",
+        "DisableReferer": "",
+        "UseDNNProxySettings": "",
+        "AddCurrentCookies": "",
+        "CookieContainerToken": "",
+        "OutputTokenName": "UpdatesJSON",
+        "IgnoreErrors": "",
+        "Headers": [],
+        "OutputHeaders": [],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "LoadEntitiesFromJson",
+      "Description": "Updates",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 7,
+      "IsDisabled": false,
+      "Parameters": {
+        "JsonModel": "[UpdatesJSON]",
+        "EntityName": "UpdatesData",
+        "EnforceISODateTime": "",
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "ExecuteActionsOnEntityList",
+      "Description": "Insert new Updates",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 8,
+      "IsDisabled": false,
+      "Parameters": {
+        "EntityName": "UpdatesData",
+        "ContextBehavior": {
+          "Value": "",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "ContinueOnError": "",
+        "Filters": [],
+        "ActionList": [
+          {
+            "ActionType": "RunSql",
+            "Id": -1,
+            "OrderIndex": 0,
+            "Description": "Insert new Update",
+            "Condition": null,
+            "IsDeleted": false,
+            "IsDisabled": false,
+            "Parameters": {
+              "ConnectionString": "",
+              "QueryTimeout": "",
+              "SqlQuery": "INSERT INTO dbo.PlantAnApp_Updates (Title, DnnFriendlyName, Version, CreatedDate)\nVALUES (@Title, @DnnFriendlyName, @Version, GetDate())",
+              "OutputTokenName": "",
+              "ShowErrors": false,
+              "BindTokens": [
+                {
+                  "name": "Title",
+                  "value": "[UpdatesData:Title]"
+                },
+                {
+                  "name": "DnnFriendlyName",
+                  "value": "[UpdatesData:DnnFriendlyName]"
+                },
+                {
+                  "name": "Version",
+                  "value": "[UpdatesData:Version]"
+                }
+              ],
+              "ExtractColumns": [],
+              "OnError": []
+            }
+          }
+        ],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "PostData",
+      "Condition": "[CheckApp] == False",
+      "Description": "Get Hotfixes <Stable>",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 9,
+      "IsDisabled": false,
+      "Parameters": {
+        "URL": "https://services.plantanapp.com/api/GetNewHotfixes?ReleaseVersion=[PAASysUpdates:ReleaseVersion]",
+        "UrlTokenContext": {
+          "Value": "Url",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "UseSSL": "",
+        "Timeout": "",
+        "HttpMethod": {
+          "Value": "GET",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "Data": "",
+        "DoNotEscapeTokens": "",
+        "DisableReferer": "",
+        "UseDNNProxySettings": "",
+        "AddCurrentCookies": "",
+        "CookieContainerToken": "",
+        "OutputTokenName": "HotfixesJSON",
+        "IgnoreErrors": "",
+        "Headers": [],
+        "OutputHeaders": [],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "PostData",
+      "Condition": "[CheckApp] == True",
+      "Description": "Get Hotfixes <Dev>",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 10,
+      "IsDisabled": false,
+      "Parameters": {
+        "URL": "https://services.plantanapp.com/api/GetNewDevHotfixes?ReleaseVersion=[PAASysUpdates:ReleaseVersion]",
+        "UrlTokenContext": {
+          "Value": "Url",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "UseSSL": "",
+        "Timeout": "",
+        "HttpMethod": {
+          "Value": "GET",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "Data": "",
+        "DoNotEscapeTokens": "",
+        "DisableReferer": "",
+        "UseDNNProxySettings": "",
+        "AddCurrentCookies": "",
+        "CookieContainerToken": "",
+        "OutputTokenName": "HotfixesJSON",
+        "IgnoreErrors": "",
+        "Headers": [],
+        "OutputHeaders": [],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "LoadEntitiesFromJson",
+      "Description": "Hotfixes",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 11,
+      "IsDisabled": false,
+      "Parameters": {
+        "JsonModel": "[HotfixesJSON]",
+        "EntityName": "HotfixesData",
+        "EnforceISODateTime": "",
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "ExecuteActionsOnEntityList",
+      "Condition": "",
+      "Description": "Insert new Hotfixes",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 12,
+      "IsDisabled": false,
+      "Parameters": {
+        "EntityName": "HotfixesData",
+        "ContextBehavior": {
+          "Value": "",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "ContinueOnError": "",
+        "Filters": [],
+        "ActionList": [
+          {
+            "ActionType": "RunSql",
+            "Id": -1,
+            "OrderIndex": 0,
+            "Description": "Insert new Hotfix",
+            "Condition": null,
+            "IsDeleted": false,
+            "IsDisabled": false,
+            "Parameters": {
+              "ConnectionString": "",
+              "QueryTimeout": "",
+              "SqlQuery": "INSERT INTO dbo.PlantAnApp_Updates_Hotfixes (FeatureType, ChangeType, Date, Version, DnnFriendlyName, Details, InstalledVersion, ProductID, Link, State, CreatedDate, Priority)\nVALUES (@FeatureType, @ChangeType, @Date, @Version, @DnnFriendlyName, @Details, @InstalledVersion, @ProductID, @Link, @State, GetDate(), @Priority)",
+              "OutputTokenName": "",
+              "ShowErrors": false,
+              "BindTokens": [
+                {
+                  "name": "FeatureType",
+                  "value": "[HotfixesData:FeatureType]"
+                },
+                {
+                  "name": "ChangeType",
+                  "value": "[HotfixesData:ChangeType]"
+                },
+                {
+                  "name": "Date",
+                  "value": "[HotfixesData:Date]"
+                },
+                {
+                  "name": "Version",
+                  "value": "[HotfixesData:Version]"
+                },
+                {
+                  "name": "DnnFriendlyName",
+                  "value": "[HotfixesData:DnnFriendlyName]"
+                },
+                {
+                  "name": "Details",
+                  "value": "[HotfixesData:Details]"
+                },
+                {
+                  "name": "InstalledVersion",
+                  "value": "[PAASysUpdates:VersionConvert(Version=\"[PAASysUpdates:ActualModuleVersion(FriendlyName=\"[HotfixesData:DnnFriendlyName]\")]\")=[PAASysUpdates:ActualModuleVersion(FriendlyName=\"[HotfixesData:DnnFriendlyName]\")]]"
+                },
+                {
+                  "name": "ProductID",
+                  "value": "[HotfixesData:Product]"
+                },
+                {
+                  "name": "Link",
+                  "value": "[HotfixesData:Link]"
+                },
+                {
+                  "name": "State",
+                  "value": "[HotfixesData:State=\"\"]"
+                },
+                {
+                  "name": "Priority",
+                  "value": "[HotfixesData:Priority]"
+                }
+              ],
+              "ExtractColumns": [],
+              "OnError": []
+            }
+          }
+        ],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "PostData",
+      "Condition": "[CheckApp] == False",
+      "Description": "Get Specific Updates <Stable>",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 13,
+      "IsDisabled": false,
+      "Parameters": {
+        "URL": "https://services.plantanapp.com/api/GetNewHotfixSpecificBuilds?ReleaseVersion=[PAASysUpdates:ReleaseVersion]",
+        "UrlTokenContext": {
+          "Value": "Url",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "UseSSL": "",
+        "Timeout": "",
+        "HttpMethod": {
+          "Value": "GET",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "Data": "",
+        "DoNotEscapeTokens": "",
+        "DisableReferer": "",
+        "UseDNNProxySettings": "",
+        "AddCurrentCookies": "",
+        "CookieContainerToken": "",
+        "OutputTokenName": "SpecificUpdatesJSON",
+        "IgnoreErrors": "",
+        "Headers": [],
+        "OutputHeaders": [],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "PostData",
+      "Condition": "[CheckApp] == True",
+      "Description": "Get Specific Updates <Dev>",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 14,
+      "IsDisabled": false,
+      "Parameters": {
+        "URL": "https://services.plantanapp.com/api/GetNewDevHotfixSpecificBuilds?ReleaseVersion=[PAASysUpdates:ReleaseVersion]",
+        "UrlTokenContext": {
+          "Value": "Url",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "UseSSL": "",
+        "Timeout": "",
+        "HttpMethod": {
+          "Value": "GET",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "Data": "",
+        "DoNotEscapeTokens": "",
+        "DisableReferer": "",
+        "UseDNNProxySettings": "",
+        "AddCurrentCookies": "",
+        "CookieContainerToken": "",
+        "OutputTokenName": "SpecificUpdatesJSON",
+        "IgnoreErrors": "",
+        "Headers": [],
+        "OutputHeaders": [],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "LoadEntitiesFromJson",
+      "Description": "Specific Updates",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 15,
+      "IsDisabled": false,
+      "Parameters": {
+        "JsonModel": "[SpecificUpdatesJSON]",
+        "EntityName": "SpecificUpdatesData",
+        "EnforceISODateTime": "",
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "ExecuteActionsOnEntityList",
+      "Description": "Insert new Specific Updates",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 16,
+      "IsDisabled": false,
+      "Parameters": {
+        "EntityName": "SpecificUpdatesData",
+        "ContextBehavior": {
+          "Value": "",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "ContinueOnError": "",
+        "Filters": [],
+        "ActionList": [
+          {
+            "ActionType": "RunSql",
+            "Id": -1,
+            "OrderIndex": 0,
+            "Description": "Insert new Specific Update",
+            "Condition": null,
+            "IsDeleted": false,
+            "IsDisabled": false,
+            "Parameters": {
+              "ConnectionString": "",
+              "QueryTimeout": "",
+              "SqlQuery": "INSERT INTO dbo.PlantAnApp_Updates_SpecificUpdates (Product, Version, Info, Link, State, CreatedDate, Priority)\nVALUES (@Product, @Version, @Info, @Link, @State, GetDate(), @Priority)",
+              "OutputTokenName": "",
+              "ShowErrors": false,
+              "BindTokens": [
+                {
+                  "name": "Product",
+                  "value": "[SpecificUpdatesData:Product]"
+                },
+                {
+                  "name": "Version",
+                  "value": "[SpecificUpdatesData:Version]"
+                },
+                {
+                  "name": "Info",
+                  "value": "[SpecificUpdatesData:Info]"
+                },
+                {
+                  "name": "Link",
+                  "value": "[SpecificUpdatesData:Link]"
+                },
+                {
+                  "name": "State",
+                  "value": "[SpecificUpdatesData:State=\"\"]"
+                },
+                {
+                  "name": "Priority",
+                  "value": "[SpecificUpdatesData:Priority]"
+                }
+              ],
+              "ExtractColumns": [],
+              "OnError": []
+            }
+          }
+        ],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "PostData",
+      "Condition": "",
+      "Description": "Get Add-ons",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 17,
+      "IsDisabled": false,
+      "Parameters": {
+        "URL": "https://services.plantanapp.com/api/GetNewAddons?ReleaseVersion=[PAASysUpdates:ReleaseVersion]",
+        "UrlTokenContext": {
+          "Value": "Url",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "UseSSL": "",
+        "Timeout": "",
+        "HttpMethod": {
+          "Value": "GET",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "Data": "",
+        "DoNotEscapeTokens": "",
+        "DisableReferer": "",
+        "UseDNNProxySettings": "",
+        "AddCurrentCookies": "",
+        "CookieContainerToken": "",
+        "OutputTokenName": "AddonsJSON",
+        "IgnoreErrors": "",
+        "Headers": [],
+        "OutputHeaders": [],
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "LoadEntitiesFromJson",
+      "Description": "Add-ons",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 18,
+      "IsDisabled": false,
+      "Parameters": {
+        "JsonModel": "[AddonsJSON]",
+        "EntityName": "AddonsData",
+        "EnforceISODateTime": "",
+        "OnError": []
+      }
+    },
+    {
+      "ActionType": "ExecuteActionsOnEntityList",
+      "Description": "Insert new Add-ons",
+      "ExecutionType": "OnExecute",
+      "OrderIndex": 19,
+      "IsDisabled": false,
+      "Parameters": {
+        "EntityName": "AddonsData",
+        "ContextBehavior": {
+          "Value": "",
+          "IsExpression": false,
+          "Expression": ""
+        },
+        "ContinueOnError": "",
+        "Filters": [],
+        "ActionList": [
+          {
+            "ActionType": "RunSql",
+            "Id": -1,
+            "OrderIndex": 0,
+            "Description": "Insert new Add-on",
+            "Condition": null,
+            "IsDeleted": false,
+            "IsDisabled": false,
+            "Parameters": {
+              "ConnectionString": "",
+              "QueryTimeout": "",
+              "SqlQuery": "INSERT INTO dbo.PlantAnApp_Updates_Addons (DnnFriendlyName, Title, Version, Description, Link, CreatedDate)\nVALUES (@DnnFriendlyName, @Title, @Version, @Description, @Link, GetDate())",
+              "OutputTokenName": "",
+              "ShowErrors": false,
+              "BindTokens": [
+                {
+                  "name": "DnnFriendlyName",
+                  "value": "[AddonsData:DnnFriendlyName]"
+                },
+                {
+                  "name": "Title",
+                  "value": "[AddonsData:Title]"
+                },
+                {
+                  "name": "Version",
+                  "value": "[AddonsData:Version]"
+                },
+                {
+                  "name": "Description",
+                  "value": "[AddonsData:Description]"
+                },
+                {
+                  "name": "Link",
+                  "value": "[AddonsData:Link]"
+                }
+              ],
+              "ExtractColumns": [],
+              "OnError": []
+            }
+          }
+        ],
+        "OnError": []
+      }
+    }
+  ],
+  "OnErrorActions": []
+}
